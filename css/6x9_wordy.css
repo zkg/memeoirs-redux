@@ -1,0 +1,256 @@
+/* Layout for 6"x9" books */
+@import "_format_6x9.css";
+@import "_shared.css";
+
+@page chapter:left {
+  @top-left {
+    content: string(headerchapter);
+    font: 11.5pt "AGaramond LT";
+    vertical-align: bottom;
+    padding-bottom: 2em;
+  }
+  @bottom-left {
+    content: counter(page);
+    font: 8pt "AGaramond LT";
+    text-align: left;
+    padding-top: 1em;
+    vertical-align: top;
+  }
+}
+
+@page chapter:right {
+  @top-right {
+    content: string(title);
+    font: 11.5pt "AGaramond LT";
+    vertical-align: bottom;
+    padding-bottom: 2em;
+  }
+  @bottom-right {
+    content: counter(page);
+    font: 8pt "AGaramond LT";
+    text-align: right;
+    padding-top: 1em;
+    vertical-align: top;
+  }
+}
+
+@page chapter:first
+{
+  @top-left { content: none; }
+  @top-center { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+html {
+  font: 11pt "AGaramond LT";
+  line-height: 12pt;
+}
+
+h1, h2, h3, h4 {
+  font-family: "AGaramond LT";
+  font-weight: normal;
+  margin: 0;
+}
+
+h1 {
+  font-size: 28pt;
+  margin-bottom: 2cm;
+}
+
+.facsimile {
+  page: facsimile;
+  display: block;
+  width: 100%;
+  margin-top: 45mm;
+  margin-bottom: 3mm;
+  text-align: center;
+}
+
+.facsimile h1 {
+  string-set: title content();
+  font: 40pt "AGaramond RegularSC";
+  line-height: 48pt;
+}
+
+.facsimile h2 {
+  font-size: 18pt;
+  margin-top: 20mm;
+  margin-bottom: 24mm;
+  line-height: 18pt;
+  vertical-align: top;
+  text-align: center;
+}
+
+.facsimile h3 {
+  font-size: 14pt;
+  line-height: 16pt;
+  text-align: center;
+}
+
+.facsimile img {
+  width: 20mm;
+  height: 9.8mm;
+  vertical-align: bottom;
+  margin-bottom: 5mm;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.colophon {
+  page: colophon;
+  page-break-before: left;
+  display: block;
+  width: 100%;
+  vertical-align: bottom;
+  position: absolute;
+  bottom: 0mm;
+  margin: 0mm;
+  padding: 0mm;
+}
+
+.colophon  p {
+  margin: 0mm;
+  margin-top: 11pt;
+  padding: 0mm;
+  font-size: 9.5pt;
+  line-height: 12pt;
+  text-align: center;
+}
+
+.toc {
+  display: block;
+  page: toc;
+  page-break-before: right;
+  margin-bottom: 15px;
+}
+
+.toc h2 {
+  font-size: 14pt;
+  line-height: 16.8pt;
+  font-weight: bold;
+  margin-bottom: 6mm;
+}
+
+#toc {
+  font-size: 11.5pt;
+  font-style: italic;
+  line-height: 18pt;
+}
+
+#toc a {
+  display: block;
+  text-decoration: none;
+  color: black;
+  margin-top: 15px;
+}
+
+#toc a span.toc_chapter {
+/*  font: 9pt "HelveticaNeueLT Std Med";*/
+  line-height: 18pt;
+}
+
+#toc a:before {
+  content: target-counter(attr(href),page) leader('');
+}
+
+.chapter {
+  page: chapter;
+  prince-page-group: start;
+  page-break-before: right;
+}
+
+.chapter h1 {
+  string-set: headerchapter content();
+  font: 36pt "AGaramond RegularSC";
+  font-weight: bold;
+  text-align: right;
+  margin: 0;
+  margin-bottom: 2cm;
+}
+
+.email {
+  orphans: 4; /* min number of lines of a paragraph left at bottom of a page */
+  widows: 4; /* min number of lines of a paragraph that left at top of a page.*/
+  margin-bottom: 28pt;
+}
+
+.email .message p {
+  margin: 0;
+}
+
+.email h2.title {
+  font: 22pt "AGaramond RegularSC";
+  font-weight: 600;
+  margin: 0;
+  margin-left: 4.05cm;
+}
+
+.email h3.date {
+  font: 12pt "AGaramond RegularSC";
+  line-height: 18pt;
+  font-style: italic;
+  padding: 0;
+  margin: 0;
+  margin-left: 4.05cm;
+}
+
+.email h4.author {
+  font-size: 12pt;
+  font-weight: bold;
+  margin: 14pt 0 1em 4.05cm;
+}
+
+.email .intro {
+  font-size: 11.5pt;
+  line-height: 13.8pt;
+  margin-left: 1cm;
+  margin-bottom: 1em;
+}
+
+.email .message {
+  font-size: 11.5pt;
+  line-height: 13.8pt;
+  margin-bottom: 1.5em;
+  text-align: justify;
+}
+
+.emojione {
+  /* Emoji Sizing */
+  font-size: inherit;
+  min-height: 14px;
+  min-width: 14px;
+  height: 2ex;
+  /* prevent img stretch */
+  width: auto;
+
+  /* Inline alignment adjust the margins  */
+  display: inline-block;
+  margin: -2ex .15em .2ex;
+  line-height: normal;
+  vertical-align: -30%;
+}
+
+.signature {
+  font: 9pt "HelveticaNeueLT Com 35 Th";
+  text-align: center;
+  display: block;
+  position: absolute;
+  width: 100%;
+  left: 0mm;
+  bottom: 10mm;
+}
+
+div.picture img {
+  max-width: 180mm;
+  max-height: 185mm;
+  width: 100%;
+  height: auto;
+}
+
+.email .message .intro {
+  display: block;
+  margin-left: 10pt;
+  margin-bottom: 13.8pt;
+}

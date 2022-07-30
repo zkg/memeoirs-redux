@@ -1,0 +1,83 @@
+/* Styles used by ALL templates */
+
+/* Tell prince to use left and right pages */
+@prince-pdf {
+  prince-pdf-page-layout: two-column;
+}
+
+/* Define pages */
+@page blank {
+  @top-left { content: none; }
+  @top-center { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page toc {
+  @top-left { content: none; }
+  @top-center { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page chapter:first {
+  @top-left { content: none; }
+  @top-center { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page foreword {
+  @top-left { content: none; }
+  @top-center { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page final {
+  @top-left { content: none; }
+  @top-center { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page facsimile {
+  @top-right { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page colophon {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 20mm;
+  @top-left { content: none; }
+  @bottom-left { content: none; }
+}
+
+@page imagepage {
+  padding: 0;
+  margin: 0;
+}
+
+/* Define general CSS */
+
+html {
+  hyphens: none;
+  prince-text-replace: "'" "\2019";
+}
+
+img {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+}
+
+.final {
+  page: final;
+  page-break-before: left;
+}

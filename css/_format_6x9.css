@@ -1,0 +1,15 @@
+/* Page sizes and margins for all 6"x9" books */
+
+@page {
+  margin: 25mm 20mm 16mm 18mm;
+  size: 6in 9in;
+  orphans: 4; /* min number of lines of a paragraph left at bottom of a page */
+  widows: 4; /* min number of lines of a paragraph left at top of a page.*/
+}
+
+@page toc {
+  margin-top: 2.5cm;
+  margin-left: 3.5cm;
+  margin-right: 7cm;
+}
+

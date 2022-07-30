@@ -1,0 +1,8 @@
+.barcode {
+  page-break-before: left;
+  position: absolute;
+  width: 7cm; /* minimum width at which the barcode is readable */
+  padding-left: 23mm;
+  left: 0;
+  bottom: 0;
+}

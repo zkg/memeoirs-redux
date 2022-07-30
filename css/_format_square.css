@@ -1,0 +1,15 @@
+/* Page sizes and margins for all square books */
+
+@page {
+  margin: 20mm 20mm 16mm 18mm;
+  size: 210mm 210mm;
+  orphans: 4; /* min number of lines of a paragraph left at bottom of a page */
+  widows: 4; /* min number of lines of a paragraph left at top of a page.*/
+}
+
+@page toc {
+  margin-top: 4cm;
+  margin-left: 4.05cm;
+  margin-right: 4.05cm;
+}
+
