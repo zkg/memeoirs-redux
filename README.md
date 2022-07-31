@@ -11,7 +11,7 @@ Memeoirs was a service that helped people create a book out of their email corre
 ### Dependencies
 
 * [Prince](https://www.princexml.com/) - Provided that your project is for non-commercial use, you should be able to use Prince for free. Download and install it.
-* Fonts - The css used for styling a book use the following fonts: AGaramond LT, AGaramond RegularSC, AGaramond LT Bold, HelveticaNeueLT Com 45 Lt, HelveticaNeueLT Std Blk, HelveticaNeueLT Com 35 Th. Buy them, they are worth it. Or replace them with your own creative vision.
+* Fonts - The css used for styling a book references the following fonts: AGaramond LT, AGaramond RegularSC, AGaramond LT Bold, HelveticaNeueLT Com 45 Lt, HelveticaNeueLT Std Blk, HelveticaNeueLT Com 35 Th. Buy them, they are worth it. Or replace them with your own creative vision.
 
 ### Installing
 
