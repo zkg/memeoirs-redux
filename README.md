@@ -35,16 +35,16 @@ prince -s css/6x9_wordy.css my_book.html -o my_book.pdf
 
 ## Help
 
-* Creating the mbox file could end up being the largest portion of this project. Here's a short guide on how to do that using Gmail and Thunderbird.
+* Creating the mbox file could end up being the largest portion of this project. Here's a [short guide](https://www.jamez.it/blog/2022/06/15/exporting-emails-mbox-file/) on how to do that using Gmail and Thunderbird.
 
-* Filtering of reply messages is not perfect. There are hundreds of different clients reply-quoting messages in different way. If the standard filter does not work, you may want to add your own routine to the clean_message function.
+* Filtering of reply messages is not perfect. There are hundreds of different clients, all reply-quoting messages in a different way. If the standard filter does not work, you may want to add your own routine to the clean_message function.
 
-*Last touches: feel free to make any final edit to the html file before generating the PDF. 
+* Last touches: feel free to make any final edit to the html file before generating the PDF. 
 
 
 ## Authors
 
-Memeoirs was a product of love, and many people helped in making it shine. Some of the ideas in this script where originally implemented as a web-app by Paulo Pino, Fred Rocha, Carlos Pires and Pedro Rio. Layout and design of the books was provided by Paulo Patricio.
+Memeoirs was a product of love, and many people helped in making it shine. Some of the ideas in this script where originally implemented as a web-app by Paulo Pinto, Fred Rocha, Carlos Pires and Pedro Rio. Layout and design of the books was provided by Paulo Patricio.
 
 ## Version History
 
