@@ -8,6 +8,7 @@ beautifully formatted HTML books that can be converted to PDF using Prince XML.
 """
 
 import logging
+import re
 import sys
 from argparse import ArgumentParser
 from datetime import date, datetime
@@ -244,25 +245,115 @@ def is_date(string: str, fuzzy: bool = False) -> bool:
         return False
 
 
-def clean_message(message_body: Optional[str]) -> str:
-    """Apply cosmetic fixes to message text.
-    
+def is_empty_content(content: str) -> bool:
+    """Check if content is effectively empty (only whitespace, breaks, etc).
+
+    Args:
+        content: Content string to check (may contain HTML)
+
+    Returns:
+        True if content is empty or contains only whitespace/HTML breaks
+    """
+    if not content:
+        return True
+
+    # Remove HTML line breaks and whitespace
+    cleaned = content.replace("<br>", "").replace("<br/>", "").replace("<br />", "")
+    cleaned = cleaned.strip()
+
+    return len(cleaned) == 0
+
+
+def has_word_wrapping(message_body: str) -> bool:
+    """Detect if message has artificial word-wrapping (consistent line lengths).
+
     Args:
         message_body: Raw message body text
-        
+
+    Returns:
+        True if message appears to have word-wrapping artifacts
+    """
+    lines = message_body.split("\n")
+    # Filter out empty lines
+    non_empty_lines = [line for line in lines if line.strip()]
+
+    if len(non_empty_lines) < 5:
+        return False  # Not enough data to determine
+
+    # Count various indicators of word-wrapping
+    indicators = 0
+    total_checks = 0
+
+    # Check 1: Lines ending with lowercase (mid-word/mid-sentence)
+    lowercase_ends = sum(1 for line in non_empty_lines
+                        if line and line.rstrip()[-1].islower())
+    if lowercase_ends / len(non_empty_lines) > 0.4:
+        indicators += 1
+    total_checks += 1
+
+    # Check 2: Lines with significant length (>20 chars) ending without punctuation
+    significant_lines = [line for line in non_empty_lines if len(line) > 20]
+    if significant_lines:
+        mid_sentence_ends = sum(1 for line in significant_lines
+                                if line and line[-1] not in '.!?,;:\'"')
+        if mid_sentence_ends / len(significant_lines) > 0.4:
+            indicators += 1
+        total_checks += 1
+
+    # Check 3: Consistent line lengths (for traditional word-wrapping)
+    if len(significant_lines) >= 3:
+        line_lengths = [len(line) for line in significant_lines]
+        avg_length = sum(line_lengths) / len(line_lengths)
+        variance = sum((length - avg_length) ** 2 for length in line_lengths) / len(line_lengths)
+        std_dev = variance ** 0.5
+
+        # If average is in typical range AND low variation
+        if 50 <= avg_length <= 85 and std_dev < 20:
+            indicators += 1
+        total_checks += 1
+
+    # If at least 2 out of 3 indicators suggest word-wrapping, treat as wrapped
+    return indicators >= 2
+
+
+def clean_message(message_body: Optional[str]) -> str:
+    """Apply cosmetic fixes to message text.
+
+    Args:
+        message_body: Raw message body text
+
     Returns:
         Cleaned and HTML-formatted message body
     """
     if not message_body:
         return ""
-    
+
     # Normalize excessive line breaks
     cleaned = message_body.replace("\n\n\n\n", "\n\n")
     cleaned = cleaned.replace("\n\n\n", "\n\n")
-    
-    # Convert line breaks to HTML
-    cleaned = cleaned.replace("\n", "<br>\n")
-    
+
+    # Detect if this message has word-wrapping artifacts
+    is_word_wrapped = has_word_wrapping(cleaned)
+
+    if is_word_wrapped:
+        # Remove spurious single line breaks (word-wrapping artifacts)
+        # Keep double line breaks (paragraph separations) by temporarily replacing them
+        cleaned = cleaned.replace("\n\n", "<!PARAGRAPH!>")
+        # Remove single line breaks (these are just formatting artifacts)
+        cleaned = cleaned.replace("\n", " ")
+        # Restore paragraph breaks
+        cleaned = cleaned.replace("<!PARAGRAPH!>", "\n\n")
+        # Clean up multiple spaces created by line break removal
+        cleaned = re.sub(r' {2,}', ' ', cleaned)
+        # Convert paragraph breaks to HTML
+        cleaned = cleaned.replace("\n\n", "<br>\n<br>\n")
+    else:
+        # Plain text email - preserve single line breaks
+        # Convert single line breaks to HTML
+        cleaned = cleaned.replace("\n\n", "<!PARAGRAPH!>")
+        cleaned = cleaned.replace("\n", "<br>\n")
+        cleaned = cleaned.replace("<!PARAGRAPH!>", "<br>\n<br>\n")
+
     # Remove common email signatures and date stamps
     lines = cleaned.splitlines()
     if lines:
@@ -272,7 +363,7 @@ def clean_message(message_body: Optional[str]) -> str:
         # Remove date signatures
         if lines and is_date(lines[-1], fuzzy=True):
             lines[-1] = ""
-    
+
     return "\n".join(lines)
 
 
@@ -304,7 +395,8 @@ def build_book(title: str, author: str, mbox_file: str) -> None:
         raise ValueError(f"Failed to process MBOX file: {e}") from e
     chapters: List[Chapter] = []
     processed_count = 0
-    
+    skipped_count = 0
+
     # Process each message
     for message in mbox:
         try:
@@ -370,30 +462,38 @@ def build_book(title: str, author: str, mbox_file: str) -> None:
                 body_content = ""
             
             p_body = clean_message(body_content)
-            
+
+            # Skip emails with empty bodies after cleaning (including only whitespace/breaks)
+            if is_empty_content(p_body):
+                logging.info(f"Skipping email with empty body: '{p_subject}' from {p_sender}")
+                skipped_count += 1
+                continue
+
             # Create message object
             msg = make_message(p_sender, p_date, p_subject, p_body)
-            
+
             # Find or create appropriate chapter
             chapter_name = make_chapter_name(email_date)
             chapter_found = False
-            
+
             for chapter in chapters:
                 if chapter.name == chapter_name:
                     chapter.add_message(msg)
                     chapter_found = True
                     break
-            
+
             if not chapter_found:
                 chapters.append(make_chapter(chapter_name, msg))
-            
+
             processed_count += 1
             
         except Exception as e:
             logging.error(f"Failed to process message: {e}")
             continue
-    
+
     logging.info(f"Processed {processed_count} messages into {len(chapters)} chapters")
+    if skipped_count > 0:
+        logging.info(f"Skipped {skipped_count} emails with empty bodies")
 
     # Build HTML: compile messages into chapters, then into final book
     chapter_html_parts = []
